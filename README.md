@@ -9,8 +9,10 @@
 | Каталог | Описание |
 |---|---|
 | [`eink-dashboard-server`](eink-dashboard-server) | Сервер на Java (Spring Boot) |
+| [`eink-dashboard-python-client`](eink-dashboard-python-client) | Клиент на Python для Raspberry Pi |
+| [`design`](design) | Макеты всех экранов 800×480 (figcraft) и их PNG-превью |
 
-Позже появятся клиент на Python и другие компоненты.
+Позже могут появиться другие компоненты.
 
 ## Сервер
 
@@ -20,3 +22,23 @@
 cd eink-dashboard-server
 ./mvnw spring-boot:run
 ```
+
+## Макеты экранов
+
+Каждый экран, который выводится на дисплей, сначала рисуется в [figcraft](design/screens.figcraft): один фрейм 800×480 на экран.
+Цвета берутся только из стилей `eink/black`, `eink/white`, `eink/red`, это вся палитра дисплея.
+
+После изменений фрейм экспортируется в PNG в [`design/preview/`](design/preview) (`.figcraft` — бинарный zip, на GitHub его не посмотреть).
+PNG служит эталоном: с ним сравниваем то, что отдаёт сервер на `/frame`.
+
+Шрифт макетов — DejaVu Sans, как на Raspberry Pi. На Mac: `brew install --cask font-dejavu`.
+
+figcraft подключается к Claude Code как MCP-сервер через [`.mcp.json`](.mcp.json). Путь к CLI берётся из переменной `FIGCRAFT_CLI`, а если она не задана — `figcraft-cli` из `PATH`:
+
+```sh
+export FIGCRAFT_CLI="$HOME/figcraft-mcp/figcraft-cli"   # в ~/.zshrc
+```
+
+| Экран | Превью |
+|---|---|
+| `test-display` | ![test-display](design/preview/test-display.png) |

@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "figcraft": {
+      "type": "stdio",
+      "command": "${FIGCRAFT_CLI:-figcraft-cli}",
+      "args": [
+        "mcp",
+        "--attach",
+        "47821"
+      ],
+      "env": {}
+    }
+  }
+}
