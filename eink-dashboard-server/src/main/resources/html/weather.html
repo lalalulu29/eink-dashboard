@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<!--
+  Тестовый экран погоды: статическая версия "Weather Screen.dc.html", адаптированная под 3-цветный дисплей.
+  Значения захардкожены (мок из дизайна). Страница ровно 800x480 — это и есть кадр.
+  Правила построения экранов: design/SCREEN-RULES.md
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<!-- DejaVu Sans: текст (системный шрифт, должен быть установлен на сервере; выбран по тестам на дисплее). DM Serif Display: только крупные цифры (кириллицы нет). -->
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; }
+  body { font-family: 'DejaVu Sans', sans-serif; }
+  .screen { width: 800px; height: 480px; background: #FFFFFF; display: flex; flex-direction: column; overflow: hidden; }
+
+  .stat { display: flex; flex-direction: column; gap: 5px; }
+  .stat-label { font-size: 12px; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; color: #000000; white-space: nowrap; }
+  .stat-value { font-family: 'DM Serif Display', serif; font-size: 24px; color: #000000; line-height: 1; }
+  .unit { font-family: 'DejaVu Sans', sans-serif; font-size: 15px; font-weight: 500; }
+
+  .card { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; border-left: 1px solid #000000; padding: 0 6px; box-sizing: border-box; }
+  .card:first-child { border-left: none; }
+  .dot-slot { height: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: #C1200A; }
+  .day { font-size: 13px; font-weight: 500; color: #000000; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1; }
+  .today .day { font-weight: 600; color: #C1200A; }
+  .date { font-size: 12px; font-weight: 400; color: #000000; line-height: 1; text-align: center; }
+  .high { font-family: 'DM Serif Display', serif; font-size: 18px; color: #C1200A; line-height: 1; }
+  .low { font-size: 13px; font-weight: 500; color: #000000; line-height: 1; }
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <!-- ━━━ TOP: Current weather ━━━ -->
+  <div style="flex:1; min-height:0; padding:24px 44px 18px; display:flex; flex-direction:column; box-sizing:border-box; color:#000000;">
+    <div style="margin-bottom:4px;">
+      <span style="font-size:13px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase;">Москва</span>
+    </div>
+    <div style="font-size:13px; font-weight:400; margin-bottom:12px;">Воскресенье, 22 ноября</div>
+    <div style="height:1px; background:#000000; margin-bottom:16px;"></div>
+
+    <div style="flex:1; min-height:0; display:flex; align-items:center; gap:40px;">
+      <!-- Large weather icon: clear -->
+      <div style="flex-shrink:0;"><svg viewBox="0 0 100 100" width="150" height="150" xmlns="http://www.w3.org/2000/svg"><line x1="50.00" y1="26.00" x2="50.00" y2="12.00" stroke="#0D0D0D" stroke-width="3.5" stroke-linecap="round"/><line x1="66.97" y1="33.03" x2="76.87" y2="23.13" stroke="#0D0D0D" stroke-width="3.5" stroke-linecap="round"/><line x1="74.00" y1="50.00" x2="88.00" y2="50.00" stroke="#0D0D0D" stroke-width="3.5" stroke-linecap="round"/><line x1="66.97" y1="66.97" x2="76.87" y2="76.87" stroke="#0D0D0D" stroke-width="3.5" stroke-linecap="round"/><line x1="50.00" y1="74.00" x2="50.00" y2="88.00" stroke="#0D0D0D" stroke-width="3.5" stroke-linecap="round"/><line x1="33.03" y1="66.97" x2="23.13" y2="76.87" stroke="#0D0D0D" stroke-width="3.5" stroke-linecap="round"/><line x1="26.00" y1="50.00" x2="12.00" y2="50.00" stroke="#0D0D0D" stroke-width="3.5" stroke-linecap="round"/><line x1="33.03" y1="33.03" x2="23.13" y2="23.13" stroke="#0D0D0D" stroke-width="3.5" stroke-linecap="round"/><circle cx="50" cy="50" r="19" fill="#C1200A"/></svg></div>
+
+      <div style="flex-shrink:0; width:284px; display:flex; flex-direction:column; justify-content:center; gap:8px;">
+        <div style="font-family:'DM Serif Display', serif; font-size:88px; color:#C1200A; line-height:0.88; letter-spacing:-0.02em;">+24°</div>
+        <div style="font-size:15px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;">Ясно</div>
+        <div style="font-size:13px; font-weight:400; line-height:1.6;">
+          <div style="white-space:nowrap;">Ощущается: +22° · Влажность: 68%</div>
+          <div>Ветер: 4 м/с, СЗ</div>
+        </div>
+      </div>
+
+      <div style="flex:1; min-width:0; height:100%; border-left:1px solid #000000; padding-left:28px; display:grid; grid-template-columns:1fr 1fr; gap:20px 12px; align-content:center;">
+        <div class="stat"><div class="stat-label">Восход</div><div class="stat-value">05:23</div></div>
+        <div class="stat"><div class="stat-label">Закат</div><div class="stat-value">21:47</div></div>
+        <div class="stat"><div class="stat-label">Давление</div><div class="stat-value">760 <span class="unit">мм</span></div></div>
+        <div class="stat"><div class="stat-label">UV индекс</div><div class="stat-value">6</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ━━━ INSET SEPARATOR ━━━ -->
+  <div style="height:1px; background:#000000; margin:0 44px; flex-shrink:0;"></div>
+
+  <!-- ━━━ BOTTOM: 6-day forecast ━━━ -->
+  <div style="height:178px; flex-shrink:0; padding:14px 44px; display:flex; align-items:stretch; box-sizing:border-box;">
+
+    <div class="card today">
+      <div class="dot-slot"><div class="dot"></div></div>
+      <div class="day">Вс</div>
+      <div class="date">22 ноя</div>
+      <div><svg viewBox="0 0 100 100" width="28" height="28" xmlns="http://www.w3.org/2000/svg"><line x1="50.00" y1="26.00" x2="50.00" y2="12.00" stroke="#0D0D0D" stroke-width="7" stroke-linecap="round"/><line x1="66.97" y1="33.03" x2="76.87" y2="23.13" stroke="#0D0D0D" stroke-width="7" stroke-linecap="round"/><line x1="74.00" y1="50.00" x2="88.00" y2="50.00" stroke="#0D0D0D" stroke-width="7" stroke-linecap="round"/><line x1="66.97" y1="66.97" x2="76.87" y2="76.87" stroke="#0D0D0D" stroke-width="7" stroke-linecap="round"/><line x1="50.00" y1="74.00" x2="50.00" y2="88.00" stroke="#0D0D0D" stroke-width="7" stroke-linecap="round"/><line x1="33.03" y1="66.97" x2="23.13" y2="76.87" stroke="#0D0D0D" stroke-width="7" stroke-linecap="round"/><line x1="26.00" y1="50.00" x2="12.00" y2="50.00" stroke="#0D0D0D" stroke-width="7" stroke-linecap="round"/><line x1="33.03" y1="33.03" x2="23.13" y2="23.13" stroke="#0D0D0D" stroke-width="7" stroke-linecap="round"/><circle cx="50" cy="50" r="19" fill="#C1200A"/></svg></div>
+      <div class="high">+24°</div>
+      <div class="low">+16°</div>
+    </div>
+
+    <div class="card">
+      <div class="dot-slot"></div>
+      <div class="day">Пн</div>
+      <div class="date">23 ноя</div>
+      <div><svg viewBox="0 0 100 100" width="28" height="28" xmlns="http://www.w3.org/2000/svg"><line x1="72.00" y1="9.00" x2="72.00" y2="-1.00" stroke="#0D0D0D" stroke-width="7" stroke-linecap="round"/><line x1="84.02" y1="13.98" x2="91.09" y2="6.91" stroke="#0D0D0D" stroke-width="7" stroke-linecap="round"/><line x1="89.00" y1="26.00" x2="99.00" y2="26.00" stroke="#0D0D0D" stroke-width="7" stroke-linecap="round"/><line x1="84.02" y1="38.02" x2="91.09" y2="45.09" stroke="#0D0D0D" stroke-width="7" stroke-linecap="round"/><line x1="72.00" y1="43.00" x2="72.00" y2="53.00" stroke="#0D0D0D" stroke-width="7" stroke-linecap="round"/><line x1="59.98" y1="38.02" x2="52.91" y2="45.09" stroke="#0D0D0D" stroke-width="7" stroke-linecap="round"/><line x1="55.00" y1="26.00" x2="45.00" y2="26.00" stroke="#0D0D0D" stroke-width="7" stroke-linecap="round"/><line x1="59.98" y1="13.98" x2="52.91" y2="6.91" stroke="#0D0D0D" stroke-width="7" stroke-linecap="round"/><circle cx="72" cy="26" r="12" fill="#C1200A"/><path d="M 7 80 Q 1 80 1 71 Q 1 61 10 60 Q 8 46 20 42 Q 28 30 42 34 Q 50 26 60 33 Q 70 27 72 40 Q 80 40 80 53 Q 80 67 68 68 Q 71 78 58 78 L 13 78 Q 3 80 7 80 Z" fill="#FDFCF8" stroke="#0D0D0D" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="high">+21°</div>
+      <div class="low">+14°</div>
+    </div>
+
+    <div class="card">
+      <div class="dot-slot"></div>
+      <div class="day">Вт</div>
+      <div class="date">24 ноя</div>
+      <div><svg viewBox="0 0 100 100" width="28" height="28" xmlns="http://www.w3.org/2000/svg"><path d="M 12 58 Q 5 58 5 49 Q 5 38 15 37 Q 13 22 26 18 Q 34 5 49 10 Q 58 3 69 12 Q 81 7 83 23 Q 92 23 92 37 Q 92 52 79 54 Q 82 64 69 64 L 17 64 Q 7 66 12 58 Z" fill="#0D0D0D"/><line x1="26" y1="72" x2="20" y2="90" stroke="#C1200A" stroke-width="7" stroke-linecap="round"/><line x1="41" y1="72" x2="35" y2="90" stroke="#C1200A" stroke-width="7" stroke-linecap="round"/><line x1="56" y1="72" x2="50" y2="90" stroke="#C1200A" stroke-width="7" stroke-linecap="round"/><line x1="71" y1="72" x2="65" y2="90" stroke="#C1200A" stroke-width="7" stroke-linecap="round"/></svg></div>
+      <div class="high">+18°</div>
+      <div class="low">+12°</div>
+    </div>
+
+    <div class="card">
+      <div class="dot-slot"></div>
+      <div class="day">Ср</div>
+      <div class="date">25 ноя</div>
+      <div><svg viewBox="0 0 100 100" width="28" height="28" xmlns="http://www.w3.org/2000/svg"><path d="M 14 67 Q 6 67 6 56 Q 6 44 17 43 Q 15 26 29 22 Q 37 8 53 14 Q 63 6 75 16 Q 88 11 90 28 Q 100 28 100 44 Q 100 60 86 62 Q 89 73 75 73 L 20 73 Q 10 75 14 67 Z" fill="#0D0D0D"/></svg></div>
+      <div class="high">+20°</div>
+      <div class="low">+13°</div>
+    </div>
+
+    <div class="card">
+      <div class="dot-slot"></div>
+      <div class="day">Чт</div>
+      <div class="date">26 ноя</div>
+      <div><svg viewBox="0 0 100 100" width="28" height="28" xmlns="http://www.w3.org/2000/svg"><line x1="50.00" y1="26.00" x2="50.00" y2="12.00" stroke="#0D0D0D" stroke-width="7" stroke-linecap="round"/><line x1="66.97" y1="33.03" x2="76.87" y2="23.13" stroke="#0D0D0D" stroke-width="7" stroke-linecap="round"/><line x1="74.00" y1="50.00" x2="88.00" y2="50.00" stroke="#0D0D0D" stroke-width="7" stroke-linecap="round"/><line x1="66.97" y1="66.97" x2="76.87" y2="76.87" stroke="#0D0D0D" stroke-width="7" stroke-linecap="round"/><line x1="50.00" y1="74.00" x2="50.00" y2="88.00" stroke="#0D0D0D" stroke-width="7" stroke-linecap="round"/><line x1="33.03" y1="66.97" x2="23.13" y2="76.87" stroke="#0D0D0D" stroke-width="7" stroke-linecap="round"/><line x1="26.00" y1="50.00" x2="12.00" y2="50.00" stroke="#0D0D0D" stroke-width="7" stroke-linecap="round"/><line x1="33.03" y1="33.03" x2="23.13" y2="23.13" stroke="#0D0D0D" stroke-width="7" stroke-linecap="round"/><circle cx="50" cy="50" r="19" fill="#C1200A"/></svg></div>
+      <div class="high">+25°</div>
+      <div class="low">+17°</div>
+    </div>
+
+    <div class="card">
+      <div class="dot-slot"></div>
+      <div class="day">Пт</div>
+      <div class="date">27 ноя</div>
+      <div><svg viewBox="0 0 100 100" width="28" height="28" xmlns="http://www.w3.org/2000/svg"><line x1="50.00" y1="26.00" x2="50.00" y2="12.00" stroke="#0D0D0D" stroke-width="7" stroke-linecap="round"/><line x1="66.97" y1="33.03" x2="76.87" y2="23.13" stroke="#0D0D0D" stroke-width="7" stroke-linecap="round"/><line x1="74.00" y1="50.00" x2="88.00" y2="50.00" stroke="#0D0D0D" stroke-width="7" stroke-linecap="round"/><line x1="66.97" y1="66.97" x2="76.87" y2="76.87" stroke="#0D0D0D" stroke-width="7" stroke-linecap="round"/><line x1="50.00" y1="74.00" x2="50.00" y2="88.00" stroke="#0D0D0D" stroke-width="7" stroke-linecap="round"/><line x1="33.03" y1="66.97" x2="23.13" y2="76.87" stroke="#0D0D0D" stroke-width="7" stroke-linecap="round"/><line x1="26.00" y1="50.00" x2="12.00" y2="50.00" stroke="#0D0D0D" stroke-width="7" stroke-linecap="round"/><line x1="33.03" y1="33.03" x2="23.13" y2="23.13" stroke="#0D0D0D" stroke-width="7" stroke-linecap="round"/><circle cx="50" cy="50" r="19" fill="#C1200A"/></svg></div>
+      <div class="high">+26°</div>
+      <div class="low">+18°</div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

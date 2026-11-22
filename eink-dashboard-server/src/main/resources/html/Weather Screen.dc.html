@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; padding: 0; }
+  </style>
+</helmet>
+
+<div style="width:100vw; min-height:100vh; display:flex; align-items:center; justify-content:center; background:#C9C5BC; font-family:'DM Sans', sans-serif;">
+
+  <div style="width:800px; height:480px; background:#FDFCF8; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 12px 48px rgba(0,0,0,0.28), 0 2px 8px rgba(0,0,0,0.14);">
+
+    <!-- ━━━ TOP: Current weather ━━━ -->
+    <div style="flex:1; min-height:0; padding:28px 44px 22px; display:flex; flex-direction:column; box-sizing:border-box; color:#0D0D0D;">
+
+      <!-- City -->
+      <div style="margin-bottom:4px;">
+        <span style="font-size:11px; font-weight:600; letter-spacing:0.16em; text-transform:uppercase;">{{ city }}</span>
+      </div>
+
+      <!-- Date -->
+      <div style="font-size:11px; font-weight:300; letter-spacing:0.03em; margin-bottom:16px;">{{ dateStr }}</div>
+
+      <!-- Separator -->
+      <div style="height:1px; background:#0D0D0D; margin-bottom:20px;"></div>
+
+      <!-- Main content: icon | info | stats -->
+      <div style="flex:1; min-height:0; display:flex; align-items:center; gap:40px;">
+
+        <!-- Large weather icon -->
+        <div style="flex-shrink:0;" dangerouslySetInnerHTML="{{ weatherIconHtml }}"></div>
+
+        <!-- Info column (fixed width so divider never shifts) -->
+        <div style="flex-shrink:0; width:284px; display:flex; flex-direction:column; justify-content:center; gap:8px;">
+          <div style="font-family:'DM Serif Display', serif; font-size:88px; color:#C1200A; line-height:0.88; letter-spacing:-0.02em;">{{ temperature }}</div>
+          <div style="font-size:13px; font-weight:500; letter-spacing:0.1em; text-transform:uppercase;">{{ conditionLabel }}</div>
+          <div style="font-size:11px; font-weight:300; letter-spacing:0.02em; line-height:1.9;">
+            <div style="white-space:nowrap;">{{ detailsLine1 }}</div>
+            <div>{{ detailsLine2 }}</div>
+          </div>
+        </div>
+
+        <!-- Stats panel -->
+        <div style="flex:1; min-width:0; height:100%; border-left:1px solid #0D0D0D; padding-left:32px; display:grid; grid-template-columns:1fr 1fr; gap:18px 0; align-content:center;">
+
+          <div style="display:flex; flex-direction:column; gap:3px;">
+            <div style="font-size:9px; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:#0D0D0D; opacity:0.4;">Восход</div>
+            <div style="font-family:'DM Serif Display', serif; font-size:22px; color:#0D0D0D; line-height:1;">{{ sunriseStr }}</div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:3px;">
+            <div style="font-size:9px; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:#0D0D0D; opacity:0.4;">Закат</div>
+            <div style="font-family:'DM Serif Display', serif; font-size:22px; color:#0D0D0D; line-height:1;">{{ sunsetStr }}</div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:3px;">
+            <div style="font-size:9px; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:#0D0D0D; opacity:0.4;">Давление</div>
+            <div style="font-family:'DM Serif Display', serif; font-size:22px; color:#0D0D0D; line-height:1;">{{ pressureStr }}</div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:3px;">
+            <div style="font-size:9px; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:#0D0D0D; opacity:0.4;">UV индекс</div>
+            <div style="font-family:'DM Serif Display', serif; font-size:22px; color:#0D0D0D; line-height:1;">{{ uvStr }}</div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ━━━ INSET SEPARATOR ━━━ -->
+    <div style="height:1px; background:#0D0D0D; margin:0 44px; flex-shrink:0;"></div>
+
+    <!-- ━━━ BOTTOM: 6-day horizontal forecast ━━━ -->
+    <div style="height:178px; flex-shrink:0; padding:14px 44px; display:flex; align-items:stretch; box-sizing:border-box;">
+
+      <sc-for list="{{ forecast }}" as="item" hint-placeholder-count="6">
+        <div style="{{ item.cardStyle }}">
+
+          <!-- Today dot (reserved space always) -->
+          <div style="height:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+            <sc-if value="{{ item.isToday }}" hint-placeholder-val="{{ false }}">
+              <div style="width:4px; height:4px; border-radius:50%; background:#C1200A;"></div>
+            </sc-if>
+          </div>
+
+          <!-- Day abbreviation -->
+          <div style="{{ item.dayStyle }}">{{ item.dayShort }}</div>
+
+          <!-- Date -->
+          <div style="font-size:9.5px; font-weight:300; color:#0D0D0D; letter-spacing:0.03em; line-height:1; text-align:center;">{{ item.dateLabel }}</div>
+
+          <!-- Weather icon -->
+          <div dangerouslySetInnerHTML="{{ item.iconHtml }}"></div>
+
+          <!-- High temp -->
+          <div style="{{ item.highStyle }}">{{ item.highStr }}</div>
+
+          <!-- Low temp -->
+          <div style="font-size:9.5px; font-weight:300; color:#0D0D0D; line-height:1; opacity:0.55;">{{ item.lowStr }}</div>
+
+        </div>
+      </sc-for>
+
+    </div>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 920, &quot;height&quot;: 580 },
+  &quot;condition&quot;: {
+    &quot;editor&quot;: &quot;enum&quot;,
+    &quot;options&quot;: [&quot;clear&quot;, &quot;partly_cloudy&quot;, &quot;cloudy&quot;, &quot;rain&quot;, &quot;snow&quot;],
+    &quot;default&quot;: &quot;clear&quot;,
+    &quot;tsType&quot;: &quot;string&quot;,
+    &quot;section&quot;: &quot;Погода&quot;
+  },
+  &quot;temperature&quot;: {
+    &quot;editor&quot;: &quot;range&quot;,
+    &quot;min&quot;: -30,
+    &quot;max&quot;: 40,
+    &quot;step&quot;: 1,
+    &quot;default&quot;: 24,
+    &quot;unit&quot;: &quot;°C&quot;,
+    &quot;tsType&quot;: &quot;number&quot;,
+    &quot;section&quot;: &quot;Погода&quot;
+  },
+  &quot;city&quot;: {
+    &quot;editor&quot;: &quot;text&quot;,
+    &quot;default&quot;: &quot;Москва&quot;,
+    &quot;tsType&quot;: &quot;string&quot;,
+    &quot;section&quot;: &quot;Место&quot;
+  }
+}">
+class Component extends DCLogic {
+  state = { tick: 0 };
+
+  componentDidMount() {
+    this._timer = setInterval(() => this.setState(s => ({ tick: s.tick + 1 })), 30000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this._timer);
+  }
+
+  renderVals() {
+    const condition = this.props.condition ?? 'clear';
+    const city     = this.props.city ?? 'Москва';
+    const temp     = +(this.props.temperature ?? 24);
+
+    const now    = new Date();
+    const DAY_S  = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+    const MON_S  = ['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'];
+    const DAY_F  = ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'];
+    const MON_F  = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+
+    const dow = DAY_F[now.getDay()];
+    const dateStr = `${dow[0].toUpperCase()}${dow.slice(1)}, ${now.getDate()} ${MON_F[now.getMonth()]}`;
+
+    const LABELS = {
+      clear: 'Ясно',
+      partly_cloudy: 'Переменная облачность',
+      cloudy: 'Облачно',
+      rain: 'Дождь',
+      snow: 'Снег',
+    };
+
+    const fmt = n => `${n >= 0 ? '+' : ''}${n}°`;
+
+    const MOCK = [
+      { cond: condition,       hi: temp,    lo: temp - 8 },
+      { cond: 'partly_cloudy', hi: 21,      lo: 14 },
+      { cond: 'rain',          hi: 18,      lo: 12 },
+      { cond: 'cloudy',        hi: 20,      lo: 13 },
+      { cond: 'clear',         hi: 25,      lo: 17 },
+      { cond: 'clear',         hi: 26,      lo: 18 },
+    ];
+
+    const forecast = MOCK.map((m, i) => {
+      const d = new Date(now);
+      d.setDate(now.getDate() + i);
+      const today = i === 0;
+      return {
+        dayShort:  DAY_S[d.getDay()],
+        dateLabel: `${d.getDate()} ${MON_S[d.getMonth()]}`,
+        iconHtml:  { __html: this._icon(m.cond, 28) },
+        highStr:   fmt(m.hi),
+        lowStr:    fmt(m.lo),
+        isToday:   today,
+        cardStyle: {
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '5px',
+          borderLeft: i > 0 ? '1px solid #0D0D0D' : 'none',
+          padding: '0 6px',
+          boxSizing: 'border-box',
+        },
+        dayStyle: {
+          fontSize: '11px',
+          fontWeight: today ? 600 : 400,
+          color: today ? '#C1200A' : '#0D0D0D',
+          letterSpacing: '0.1em',
+          textTransform: 'uppercase',
+          lineHeight: 1,
+        },
+        highStyle: {
+          fontFamily: "'DM Serif Display', serif",
+          fontSize: '15px',
+          color: '#C1200A',
+          lineHeight: 1,
+        },
+      };
+    });
+
+    return {
+      city,
+      dateStr,
+      conditionLabel: LABELS[condition] ?? 'Ясно',
+      temperature:   fmt(temp),
+      feelsLikeStr:  `Ощущается: ${fmt(temp - 2)}`,
+      humidityStr:   `Влажность: 68%`,
+      windSpeedStr:  `Ветер: 4 м/с, СЗ`,
+      weatherIconHtml: { __html: this._icon(condition, 150) },
+      detailsLine1: `Ощущается: ${fmt(temp - 2)}  ·  Влажность: 68%`,
+      detailsLine2: `Ветер: 4 м/с, СЗ`,
+      sunriseStr:  '05:23',
+      sunsetStr:   '21:47',
+      pressureStr: '760 мм',
+      uvStr:       '6',
+      forecast,
+    };
+  }
+
+  _icon(condition, size) {
+    const c  = '#0D0D0D';
+    const r  = '#C1200A';
+    const bg = '#FDFCF8';
+    const sw = size >= 60 ? 3.5 : 7;
+
+    // Black rays radiating from a center point
+    const rays = (cx, cy, rIn, rOut) => {
+      let s = '';
+      for (let i = 0; i < 8; i++) {
+        const ang = (i * 45 - 90) * Math.PI / 180;
+        s += `<line x1="${(cx + rIn  * Math.cos(ang)).toFixed(2)}" y1="${(cy + rIn  * Math.sin(ang)).toFixed(2)}" x2="${(cx + rOut * Math.cos(ang)).toFixed(2)}" y2="${(cy + rOut * Math.sin(ang)).toFixed(2)}" stroke="${c}" stroke-width="${sw}" stroke-linecap="round"/>`;
+      }
+      return s;
+    };
+
+    const bigCloud = `M 14 67 Q 6 67 6 56 Q 6 44 17 43 Q 15 26 29 22 Q 37 8 53 14 Q 63 6 75 16 Q 88 11 90 28 Q 100 28 100 44 Q 100 60 86 62 Q 89 73 75 73 L 20 73 Q 10 75 14 67 Z`;
+    const smCloud  = `M 12 58 Q 5 58 5 49 Q 5 38 15 37 Q 13 22 26 18 Q 34 5 49 10 Q 58 3 69 12 Q 81 7 83 23 Q 92 23 92 37 Q 92 52 79 54 Q 82 64 69 64 L 17 64 Q 7 66 12 58 Z`;
+    const fgCloud  = `M 7 80 Q 1 80 1 71 Q 1 61 10 60 Q 8 46 20 42 Q 28 30 42 34 Q 50 26 60 33 Q 70 27 72 40 Q 80 40 80 53 Q 80 67 68 68 Q 71 78 58 78 L 13 78 Q 3 80 7 80 Z`;
+    const rl = `stroke="${r}" stroke-width="${sw}" stroke-linecap="round"`;
+
+    const map = {
+      // Black rays → red filled disc on top
+      clear:
+        rays(50, 50, 24, 38) +
+        `<circle cx="50" cy="50" r="19" fill="${r}"/>`,
+
+      // Solid black cloud silhouette
+      cloudy:
+        `<path d="${bigCloud}" fill="${c}"/>`,
+
+      // Red sun + black rays, white-fill cloud in front
+      partly_cloudy:
+        rays(72, 26, 17, 27) +
+        `<circle cx="72" cy="26" r="12" fill="${r}"/>` +
+        `<path d="${fgCloud}" fill="${bg}" stroke="${c}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round"/>`,
+
+      // Solid black cloud + red rain streaks
+      rain:
+        `<path d="${smCloud}" fill="${c}"/>` +
+        `<line x1="26" y1="72" x2="20" y2="90" ${rl}/>` +
+        `<line x1="41" y1="72" x2="35" y2="90" ${rl}/>` +
+        `<line x1="56" y1="72" x2="50" y2="90" ${rl}/>` +
+        `<line x1="71" y1="72" x2="65" y2="90" ${rl}/>`,
+
+      // Black outline cloud + red snowflake crystal
+      snow:
+        `<path d="${smCloud}" fill="none" stroke="${c}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round"/>` +
+        `<line x1="50" y1="72" x2="50" y2="97" ${rl}/>` +
+        `<line x1="37" y1="78" x2="63" y2="91" ${rl}/>` +
+        `<line x1="63" y1="78" x2="37" y2="91" ${rl}/>` +
+        `<line x1="43" y1="72" x2="57" y2="72" ${rl}/>` +
+        `<line x1="43" y1="97" x2="57" y2="97" ${rl}/>` +
+        `<line x1="31" y1="81" x2="31" y2="87" ${rl}/>` +
+        `<line x1="69" y1="81" x2="69" y2="87" ${rl}/>`,
+    };
+
+    return `<svg viewBox="0 0 100 100" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">${map[condition] || map.clear}</svg>`;
+  }
+}
+</script>
+</body>
+</html>
