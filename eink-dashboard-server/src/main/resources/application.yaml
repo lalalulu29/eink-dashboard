@@ -1,3 +1,12 @@
 spring:
   application:
     name: eink-dashboard-server
+
+  datasource:
+    url: ${DATASOURCE_URL}
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+server:
+  port: 8080
